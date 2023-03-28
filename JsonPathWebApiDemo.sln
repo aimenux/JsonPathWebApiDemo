@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example01", "src\Example01\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17E42B5B-11F5-44DC-849A-13318983A586}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -14,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{52925B7B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example01.Tests", "test\Example01.Tests\Example01.Tests.csproj", "{6D1A251F-8D55-4E6B-BCEF-DACC806B6DBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example02", "src\Example02\Example02.csproj", "{0A48DED5-5EF8-432A-82F7-56AF2618A3A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example02", "src\Example02\Example02.csproj", "{0A48DED5-5EF8-432A-82F7-56AF2618A3A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example02.Tests", "test\Example02.Tests\Example02.Tests.csproj", "{4D826677-467C-4D1E-B1A7-E30FB60CFE28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example02.Tests", "test\Example02.Tests\Example02.Tests.csproj", "{4D826677-467C-4D1E-B1A7-E30FB60CFE28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
