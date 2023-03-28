@@ -1,0 +1,27 @@
+﻿###
+
+GET https://localhost:5010/Todo
+
+###
+
+GET https://localhost:5010/Todo/1
+
+###
+
+POST https://localhost:5010/Todo
+content-type: application/json
+
+{
+  "title": "abc",
+  "category": "home"
+}
+
+###
+
+POST https://localhost:5010/Todo
+content-type: application/json
+
+{
+  "title": "foo",
+  "category": "bar"
+}
