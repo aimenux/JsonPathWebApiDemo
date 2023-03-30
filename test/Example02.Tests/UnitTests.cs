@@ -22,6 +22,67 @@ public class UnitTests
         result.IsValid.Should().Be(expectedIsValid);
     }
     
+    [Theory]
+    [InlineData("a", "home", 1)]
+    [InlineData("abc", "rome", 1)]
+    [InlineData("a", "homework", 2)]
+    public void Should_Get_Validation_Errors(string title, string category, int expectedErrors)
+    {
+        // arrange
+        var holder = Substitute.For<IRequestBodyHolder>();
+        var validator = new TodoDtoValidator(holder);
+        var dto = new TodoDto
+        {
+            Title = title,
+            Category = category
+        };
+        
+        // act
+        var result = validator.Validate(dto);
+
+        // assert
+        result.IsValid.Should().Be(false);
+        result.Errors.Should().HaveCount(expectedErrors);
+    }
+    
+    [Theory]
+    [ClassData(typeof(JsonPathTestCases))]
+    public void Should_Get_Json_Path_For_Property_Name(string propertyName, string expectedPath)
+    {
+        // arrange
+        const string json =
+        """
+        {
+            "firstName": "John",
+            "lastName": "doe",
+            "age": 26,
+            "address": 
+            {
+                "streetAddress": "15 street",
+                "city": "Nara",
+                "postalCode": "630-0192"
+            },
+            "phoneNumbers": 
+            [
+             {
+                "type": "iPhone",
+                "number": "0123-4567-8888"
+             },
+             {
+                "type": "home",
+                "number": "0123-4567-8910"
+             }
+            ]
+        }
+        """;
+
+        // act
+        var paths = json.GetJsonPath(propertyName);
+
+        // assert
+        paths.Should().Be(expectedPath);
+    }
+    
     private class TodoDtoTestCases : TheoryData<TodoDto, bool>
     {
         public TodoDtoTestCases()
@@ -61,6 +122,18 @@ public class UnitTests
                 Title = "Foo",
                 Category = "Bar"
             }, false);
+        }
+    }
+    
+    private class JsonPathTestCases : TheoryData<string, string>
+    {
+        public JsonPathTestCases()
+        {
+            Add("age", "$.age");
+            Add("city", "$.address.city");
+            Add("firstName", "$.firstName");
+            Add("streetAddress", "$.address.streetAddress");
+            Add("number", "$.phoneNumbers[0].number");
         }
     }
 }

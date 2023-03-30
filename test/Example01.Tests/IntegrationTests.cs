@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using Example01.ViewModels;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Example01.Tests;
 
@@ -22,8 +23,8 @@ public class IntegrationTests
     }
     
     [Theory]
-    [ClassData(typeof(TodoDtoTestCases))]
-    public async Task When_Post_Todo_Then_Should_Return_Success_Response(TodoDto dto, HttpStatusCode expectedStatusCode)
+    [ClassData(typeof(OkTodoDtoTestCases))]
+    public async Task When_Post_Todo_Then_Should_Return_Success_Response(TodoDto dto)
     {
         // arrange
         var fixture = new WebApiTestFixture();
@@ -33,48 +34,90 @@ public class IntegrationTests
         var response = await client.PostAsJsonAsync("/todo", dto);
 
         // assert
-        response.StatusCode.Should().Be(expectedStatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
     
-    private class TodoDtoTestCases : TheoryData<TodoDto, HttpStatusCode>
+    [Theory]
+    [ClassData(typeof(KoTodoDtoTestCases))]
+    public async Task When_Post_Todo_Then_Should_Return_BadRequest_Response(TodoDto dto, int expectedErrors)
     {
-        public TodoDtoTestCases()
+        // arrange
+        var fixture = new WebApiTestFixture();
+        var client = fixture.CreateClient();
+
+        // act
+        var response = await client.PostAsJsonAsync("/todo", dto);
+        var errors = await GetErrorsAsync(response);
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        errors.Should().HaveCount(expectedErrors);
+        errors.Keys.Should().Contain(x => x.StartsWith("$."));
+    }
+
+    private static async Task<IDictionary<string, string[]>> GetErrorsAsync(HttpResponseMessage response)
+    {
+        var validationProblems = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+        return validationProblems.Errors;
+    }
+
+    private class OkTodoDtoTestCases : TheoryData<TodoDto>
+    {
+        public OkTodoDtoTestCases()
         {
             Add(new TodoDto
             {
                 Title = "abc",
                 Category = "Home"
-            }, HttpStatusCode.Created);
+            });
             
             Add(new TodoDto
             {
                 Title = "xyz",
                 Category = "Work"
-            }, HttpStatusCode.Created);
+            });
             
             Add(new TodoDto
             {
                 Title = "abc",
                 Category = "home"
-            }, HttpStatusCode.Created);
+            });
             
             Add(new TodoDto
             {
                 Title = "xyz",
                 Category = "work"
-            }, HttpStatusCode.Created);
+            });
+        }
+    }
+    
+    private class KoTodoDtoTestCases : TheoryData<TodoDto, int>
+    {
+        public KoTodoDtoTestCases()
+        {
+            Add(new TodoDto
+            {
+                Title = "A",
+                Category = "Work"
+            }, 1);
             
             Add(new TodoDto
             {
-                Title = "",
-                Category = "Work"
-            }, HttpStatusCode.BadRequest);
+                Title = "Abc",
+                Category = "Xyz"
+            }, 1);
             
             Add(new TodoDto
             {
                 Title = "Foo",
                 Category = "Bar"
-            }, HttpStatusCode.BadRequest);
+            }, 1);
+            
+            Add(new TodoDto
+            {
+                Title = new string('*', 50),
+                Category = "Bar"
+            }, 2);
         }
     }
 }
