@@ -6,10 +6,10 @@ Using json path in order to enrich validation errors in web api
 ```
 
 > In this repo, i m using json path in order to enrich validation errors in web api
-> 
-> - Example01 : Use of controller api
 >
-> - Example02 : Use of minimal api
+> :one: `Example01` Use of [controller api](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api)
+>
+> :two: `Example02` Use of [minimal api](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api)
 >
 >
 
